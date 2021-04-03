@@ -2,6 +2,8 @@ const webpackMerge = require("webpack-merge");
 const baseWebpackConfig = require("./webpack.base.config")
 const utils = require("./utils")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+const notifier = require('node-notifier')
 
 module.exports = webpackMerge(baseWebpackConfig, {
     // 指定构建环境  
@@ -12,6 +14,24 @@ module.exports = webpackMerge(baseWebpackConfig, {
             filename: utils.resolve('./../dist/index.html'), // html模板的生成路径
             template: 'index.html',//html模板
             inject: true, // true：默认值，script标签位于html文件的 body 底部
+        }),
+        new FriendlyErrorsPlugin({
+            compilationSuccessInfo: {
+                messages: [`Your application is running here: http://localhost:3000`],
+            },
+            onErrors: (severity, errors) => {
+                if (severity !== 'error') return
+
+                const error = errors[0]
+                const filename = error.file && error.file.split('!').pop()
+
+                notifier.notify({
+                    title: packageConfig.name,
+                    message: severity + ': ' + error.name,
+                    subtitle: filename || '',
+                    icon: path.join(__dirname, 'logo.png')
+                })
+            }
         })
     ],
     module: {
@@ -31,5 +51,6 @@ module.exports = webpackMerge(baseWebpackConfig, {
                 "changeOrigin": true
             },
         },
+        quiet: true, // necessary for FriendlyErrorsPlugin
     }
 });

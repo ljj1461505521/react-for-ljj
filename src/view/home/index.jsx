@@ -1,7 +1,7 @@
 import React from 'react'
 import { summary } from "@/api/home"
 import store from "@/store"
-import { Input } from 'antd'
+import { Button, Input } from 'antd'
 import { getUserInfo } from "@/store/action/userInfo"
 import { connect } from "react-redux"
 class HomeIndex extends React.Component {
@@ -24,6 +24,7 @@ class HomeIndex extends React.Component {
                     placeholder="那没事了"
                     onChange={this.props.inputChange}
                 />
+                <Button type="primary" >你干嘛！？</Button>
             </div>
         )
     }
